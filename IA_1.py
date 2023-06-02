@@ -1,44 +1,34 @@
-import cv2
-import os
-from google_drive_downloader import GoogleDriveDownloader as gdd
+import streamlit as st
+import streamlit_webrtc as webrtc
 
-# Descargar la imagen de la letra "A" desde Google Drive
-output_dir = './lenguaje'
-os.makedirs(output_dir, exist_ok=True)
-gdd.download_file_from_google_drive(file_id='1byE1Yt4MuyEf5q_GQhVQc7I96LsPfTpa', dest_path=f'{output_dir}/A.jpg', unzip=False)
+# Configurar la página de la aplicación
+st.title("Proyecto de Lenguaje de Señas")
 
-# Ruta de la imagen de la letra "A" en tu directorio local
-ruta_imagen_A = './lenguaje/A.jpg'
-
-# Cargar la imagen de la letra "A"
-imagen_A = cv2.imread(ruta_imagen_A)
-
-# Función para mostrar la imagen de la letra "A" cuando se detecta
+# Función para mostrar la imagen correspondiente a la letra seleccionada
 def mostrar_lenguaje_letra_A():
-    cv2.imshow("Lenguaje de señas - Letra A", imagen_A)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    st.image('ruta_a_imagen_A.jpg', caption='Lenguaje de señas - Letra A')
 
-# Captura de video desde la cámara
-video_captura = cv2.VideoCapture(0)  # El número 0 indica que se utilizará la cámara predeterminada
+# Botón para activar la cámara
+activar_camara = st.button("Activar cámara")
 
-# Bucle para la detección y visualización en tiempo real
-while True:
-    ret, frame = video_captura.read()  # Captura un fotograma de la cámara
+# Verificar si se ha activado la cámara
+if activar_camara:
+    st.write("Cámara activada")
+    webrtc_ctx = webrtc_streamer(
+        key="example",
+        mode=WebRtcMode.SENDRECV,
+        video_transformer_factory=None,
+        async_transform=True,
+    )
 
-    # Realizar la detección de la letra "A" en el fotograma actual
-    # Aquí debes agregar tu código de detección utilizando técnicas de procesamiento de imágenes y aprendizaje automático
+    # Mostrar el video de la cámara
+    if webrtc_ctx.video_receiver:
+        video_frame = webrtc_ctx.video_receiver.get_frame()
+        st.image(video_frame)
 
-    # Si se detecta la letra "A", mostrar la imagen correspondiente
-    if deteccion_letra_A:
-        mostrar_lenguaje_letra_A()
+        # Realizar la detección de la letra "A" en el fotograma actual
+        # Aquí debes agregar tu código de detección utilizando técnicas de procesamiento de imágenes y aprendizaje automático
 
-    # Mostrar el fotograma en una ventana
-    cv2.imshow("Cámara", frame)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):  # Presiona 'q' para salir del bucle
-        break
-
-video_captura.release()  # Libera los recursos de la cámara
-cv2.destroyAllWindows()
-
+        # Si se detecta la letra "A", mostrar la imagen correspondiente
+        if deteccion_letra_A:
+            mostrar_lenguaje_letra_A()
