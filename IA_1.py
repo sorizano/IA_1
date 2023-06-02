@@ -1,3 +1,6 @@
+pip install streamlit-webrtc
+
+
 import streamlit as st
 import streamlit_webrtc as webrtc
 
